@@ -1,0 +1,190 @@
+/* Responsive styles for InterviewAce AI */
+
+@media (max-width: 1024px) {
+    .main-layout {
+        padding: 2rem 1.5rem;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Base typography */
+    body {
+        font-size: 15px;
+    }
+    
+    .hero-section {
+        padding: 4rem 1rem 3rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.8rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+    
+    /* Navigation */
+    .navbar-container {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    /* Analysis Screens */
+    .analysis-header-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .score-widget {
+        padding: 1.5rem;
+    }
+    
+    .summary-card {
+        padding: 1.5rem;
+    }
+    
+    .analysis-details-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* Results Screen */
+    .result-header-panel {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .result-score-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .result-analysis-summary {
+        padding: 2rem 1.5rem;
+    }
+    
+    .result-overview-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* Interview console */
+    .progress-container {
+        width: 50%;
+    }
+    
+    .question-content h2 {
+        font-size: 1.3rem;
+    }
+    
+    .speech-control-panel {
+        padding: 1.5rem 1rem;
+    }
+    
+    /* Authentication Card */
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-welcome {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .dashboard-welcome h2 {
+        font-size: 1.8rem;
+    }
+    
+    .stat-card {
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+    
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+    }
+    
+    .stat-info p {
+        font-size: 1.4rem;
+    }
+    
+    .console-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .progress-container {
+        width: 100%;
+    }
+    
+    .question-text-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .q-header {
+        padding: 1rem;
+    }
+    
+    .q-title-wrapper h4 {
+        font-size: 0.95rem;
+    }
+    
+    .q-body {
+        padding: 1.25rem;
+    }
+    
+    .console-actions {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .console-actions button {
+        width: 100%;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .hero-actions button, .hero-actions a {
+        width: 100%;
+    }
+    
+    .dashboard-table th, .dashboard-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+}

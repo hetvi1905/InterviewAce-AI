@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - InterviewAce AI</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Admin tab styles */
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-fast);
+        }
+        .tab-btn:hover, .tab-btn.active {
+            color: var(--accent-color);
+            background: var(--accent-light);
+        }
+        .dashboard-section {
+            display: none;
+        }
+        .dashboard-section.active {
+            display: block;
+        }
+        .admin-only {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="glass-nav">
+        <div class="navbar-container">
+            <a href="/dashboard" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                InterviewAce <span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+                <a href="/upload" class="nav-link">Analyze Resume</a>
+                <a href="/interview" class="nav-link">Mock Interview</a>
+                <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="logoutBtn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-layout">
+        
+        <!-- Welcome banner -->
+        <div class="dashboard-welcome">
+            <div>
+                <h2>Welcome, <span id="usernameDisplay">User</span>!</h2>
+                <p id="welcomeSubtext">Track your progress and practice mock interviews.</p>
+            </div>
+            <div>
+                <a href="/interview" class="btn btn-primary btn-lg">
+                    <i class="fas fa-play"></i> Start New Interview
+                </a>
+            </div>
+        </div>
+
+        <!-- Role-based Tabs (Shown only for Admin Users) -->
+        <div class="dashboard-tabs admin-only" id="adminTabs">
+            <button class="tab-btn active" onclick="switchTab('user-portal')">
+                <i class="fas fa-user-graduate"></i> Practice Portal
+            </button>
+            <button class="tab-btn" onclick="switchTab('admin-panel')">
+                <i class="fas fa-user-shield"></i> Admin Console
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION A: USER PRACTICE PORTAL            -->
+        <!-- ========================================== -->
+        <div id="user-portal-section" class="dashboard-section active">
+            
+            <!-- Statistics Dashboard Overview -->
+            <div class="dashboard-stats">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-comments"></i></div>
+                    <div class="stat-info">
+                        <h4>Total Interviews</h4>
+                        <p id="statTotalInterviews">0</p>
+                    </div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-info">
+                        <h4>Average Score</h4>
+                        <p><span id="statAverageScore">0</span>%</p>
+                    </div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-file-invoice"></i></div>
+                    <div class="stat-info">
+                        <h4>ATS Resume Check</h4>
+                        <p id="statResumeScore">None</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Double Columns: Performance & Resume history -->
+            <div class="dashboard-grid">
+                
+                <!-- Left Panel: Recent Interviews -->
+                <div class="glass-card dashboard-table-card">
+                    <div class="section-title">
+                        <h3>Recent Interview Performance</h3>
+                        <a href="/interview" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                            New Mock
+                        </a>
+                    </div>
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Score</th>
+                                <th>Date Completed</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentInterviewsBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-secondary);">
+                                    No mock interviews taken yet. Click "Start New Interview" to begin!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right Panel: Resume Upload History -->
+                <div class="glass-card dashboard-table-card" style="padding: 2rem;">
+                    <div class="section-title">
+                        <h3>Resume Analysis</h3>
+                        <a href="/upload" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                            Upload
+                        </a>
+                    </div>
+                    <div id="latestResumeWidget" style="margin-bottom: 1.5rem; text-align: center; display: none;">
+                        <div style="font-size: 2.2rem; font-weight: 700; color: var(--accent-color);" id="latestAtsScore">0%</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">Latest ATS Match Score</div>
+                    </div>
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>ATS Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resumeHistoryBody">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: var(--text-secondary);">
+                                    No resume analyzed yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION B: ADMIN PANEL                     -->
+        <!-- ========================================== -->
+        <div id="admin-panel-section" class="dashboard-section">
+            
+            <!-- Global Admin Metrics -->
+            <div class="admin-grid-top">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h4>Total Registered Users</h4>
+                        <p id="adminStatUsers">0</p>
+                    </div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="stat-info">
+                        <h4>Global Mock Counts</h4>
+                        <p id="adminStatInterviews">0</p>
+                    </div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-info">
+                        <h4>Global Average Score</h4>
+                        <p><span id="adminStatAvgScore">0</span>%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                <!-- Global stats summary card -->
+                <div class="glass-card dashboard-table-card">
+                    <div class="section-title">
+                        <h3>Interview Breakdown by Type</h3>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1rem 0;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Technical Interviews</span>
+                                <span id="adminTechCount">0</span>
+                            </div>
+                            <div class="progress-container" style="width: 100%;"><div class="progress-fill" id="adminTechProgress"></div></div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>HR Interviews</span>
+                                <span id="adminHrCount">0</span>
+                            </div>
+                            <div class="progress-container" style="width: 100%;"><div class="progress-fill" id="adminHrProgress"></div></div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Aptitude Interviews</span>
+                                <span id="adminAptCount">0</span>
+                            </div>
+                            <div class="progress-container" style="width: 100%;"><div class="progress-fill" id="adminAptProgress"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Activity Log -->
+                <div class="glass-card dashboard-table-card">
+                    <div class="section-title">
+                        <h3>Recent User Activities</h3>
+                    </div>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminActivitiesBody">
+                                <tr>
+                                    <td colspan="3" style="text-align: center; color: var(--text-secondary);">No activities.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Database Management table -->
+            <div class="glass-card admin-users-card">
+                <div class="section-title">
+                    <h3>Registered Platform Users</h3>
+                </div>
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                            <th>Interviews</th>
+                            <th>Resumes</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--text-secondary);">
+                                Loading user list...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 InterviewAce AI. Empowered by Google Gemini API. All rights reserved.</p>
+    </footer>
+
+    <!-- Loading Animation Modal -->
+    <div id="loader" class="loader-wrapper">
+        <div class="spinner"></div>
+        <div class="loader-text">Loading details...</div>
+    </div>
+
+    <!-- Script imports -->
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#themeToggle i').classList.replace('fa-moon', 'fa-sun');
+        }
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const icon = document.querySelector('#themeToggle i');
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // Tab Switching logic
+        function switchTab(tabId) {
+            const portalSection = document.getElementById('user-portal-section');
+            const adminSection = document.getElementById('admin-panel-section');
+            const tabButtons = document.querySelectorAll('.tab-btn');
+
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            if (tabId === 'user-portal') {
+                portalSection.classList.add('active');
+                adminSection.classList.remove('active');
+                tabButtons[0].classList.add('active');
+            } else {
+                portalSection.classList.remove('active');
+                adminSection.classList.add('active');
+                tabButtons[1].classList.add('active');
+                // Refresh admin data when tab clicked
+                if (typeof loadAdminPanelData === 'function') {
+                    loadAdminPanelData();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

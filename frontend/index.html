@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewAce AI - Mock Interview Platform</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="glass-nav">
+        <div class="navbar-container">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                InterviewAce <span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/signup" class="nav-link">Sign Up</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Hero Section -->
+    <main class="main-layout">
+        <section class="hero-section">
+            <h1>Master Your Next Job Interview with <span>AI Feedback</span></h1>
+            <p>Upload your PDF resume for instant ATS analysis, generate tailored interview questions, and practice with real-time speech recognition for customized evaluations.</p>
+            <div class="hero-actions">
+                <a href="/signup" class="btn btn-primary btn-lg"><i class="fas fa-user-plus"></i> Get Started Free</a>
+                <a href="/login" class="btn btn-secondary btn-lg"><i class="fas fa-sign-in-alt"></i> Access Platform</a>
+            </div>
+        </section>
+
+        <!-- Feature Highlights Grid -->
+        <section class="features-grid">
+            <div class="glass-card feature-card hover-scale">
+                <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>Resume ATS Analyzer</h3>
+                <p>Upload your PDF resume to receive a comprehensive ATS check, strengths, missing keywords, and recommended study technologies.</p>
+            </div>
+
+            <div class="glass-card feature-card hover-scale">
+                <div class="feature-icon"><i class="fas fa-microphone"></i></div>
+                <h3>Voice Recognition Practice</h3>
+                <p>Interact using the Web Speech API to answer mock questions naturally. Practice with real-time transcripts and confidence scores.</p>
+            </div>
+
+            <div class="glass-card feature-card hover-scale">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>AI Performance Analytics</h3>
+                <p>Track your scores, download detailed feedback reports, review question exemplars, and track improvements on an analytics dashboard.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 InterviewAce AI. Empowered by Google Gemini API. All rights reserved.</p>
+    </footer>
+
+    <!-- Dark Mode Toggle Script -->
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = themeToggleBtn.querySelector('i');
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            if (isDark) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - InterviewAce AI</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .req-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+            transition: color var(--transition-fast);
+        }
+        .req-item i {
+            font-size: 0.9rem;
+        }
+        .req-valid {
+            color: var(--success) !important;
+        }
+        .req-invalid {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="glass-nav">
+        <div class="navbar-container">
+            <a href="/" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                InterviewAce <span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="/login" class="nav-link">Login</a>
+                <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-layout auth-wrapper">
+        <div class="glass-card auth-card">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Register to start analyzing resumes & mock interviews</p>
+            </div>
+
+            <div id="errorAlert" class="error-message"></div>
+            <div id="successAlert" class="success-message"></div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Create strong password" required>
+                    
+                    <!-- Password Validation Checklist -->
+                    <div class="password-requirements" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-secondary);">
+                        <span style="font-weight: 600;">Password Checklist:</span>
+                        <ul style="list-style: none; margin-top: 0.35rem;">
+                            <li id="req-length" class="req-item req-invalid"><i class="fas fa-times-circle"></i> Minimum 8 characters</li>
+                            <li id="req-upper" class="req-item req-invalid"><i class="fas fa-times-circle"></i> At least one uppercase letter (A-Z)</li>
+                            <li id="req-lower" class="req-item req-invalid"><i class="fas fa-times-circle"></i> At least one lowercase letter (a-z)</li>
+                            <li id="req-number" class="req-item req-invalid"><i class="fas fa-times-circle"></i> At least one number (0-9)</li>
+                            <li id="req-special" class="req-item req-invalid"><i class="fas fa-times-circle"></i> At least one special symbol (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.85rem;" disabled id="submitBtn">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="/login">Login</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Animation Modal -->
+    <div id="loader" class="loader-wrapper">
+        <div class="spinner"></div>
+        <div class="loader-text">Creating account...</div>
+    </div>
+
+    <!-- Theme & Sign up logic -->
+    <script src="js/signup.js"></script>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#themeToggle i').classList.replace('fa-moon', 'fa-sun');
+        }
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const icon = document.querySelector('#themeToggle i');
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

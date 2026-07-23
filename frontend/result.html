@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Results - InterviewAce AI</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for beautiful analytics graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf.js for exporting result page to PDF directly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="glass-nav">
+        <div class="navbar-container">
+            <a href="/dashboard" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                InterviewAce <span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/upload" class="nav-link">Analyze Resume</a>
+                <a href="/interview" class="nav-link">Mock Interview</a>
+                <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-layout">
+        
+        <!-- Header Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 2.2rem; margin-bottom: 0.25rem;">Evaluation Report</h2>
+                <p style="color: var(--text-secondary);" id="interviewMetaText">Technical Mock Interview Session</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-secondary" id="downloadReportBtn">
+                    <i class="fas fa-download"></i> Download Report PDF
+                </button>
+                <a href="/dashboard" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- TARGET AREA FOR PDF EXPORT -->
+        <div id="pdfTarget" style="padding: 10px;">
+            
+            <!-- Row 1: circular score widget & summary synthesis -->
+            <div class="result-header-panel">
+                <div class="glass-card result-score-card">
+                    <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1rem; letter-spacing: 0.5px;">Overall Score</h4>
+                    <div class="score-circle">
+                        <svg>
+                            <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
+                            <circle class="circle-progress" id="resultScoreCircle" cx="75" cy="75" r="60"></circle>
+                        </svg>
+                        <div class="score-value" id="resultScoreValue">0%</div>
+                    </div>
+                    <span class="badge badge-tech" id="resultConfidenceBadge">High Confidence</span>
+                </div>
+
+                <div class="glass-card result-analysis-summary">
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">AI Executive Evaluation</h3>
+                        <p style="color: var(--text-secondary); line-height: 1.6;" id="overallFeedback">Summary is compiling from Gemini evaluations...</p>
+                    </div>
+                    
+                    <div class="results-stats-strip">
+                        <div class="result-stat-box">
+                            <span>Confidence Level</span>
+                            <strong id="statConfidence">High</strong>
+                        </div>
+                        <div class="result-stat-box">
+                            <span>Date Completed</span>
+                            <strong id="statDate">2026-07-23</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: Strengths, Weaknesses, Recommended Topics -->
+            <div class="result-overview-grid">
+                <div class="glass-card" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;">
+                        <i class="fas fa-award" style="color: var(--success);"></i> Demonstrated Strengths
+                    </h3>
+                    <ul class="bullet-list list-strengths" id="strengthsList">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+
+                <div class="glass-card" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;">
+                        <i class="fas fa-directions" style="color: var(--danger);"></i> Gaps & Improvements
+                    </h3>
+                    <ul class="bullet-list list-weaknesses" id="weaknessesList">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Row 3: Study Recommendations -->
+            <div class="glass-card" style="padding: 2rem; margin-bottom: 2.5rem;">
+                <h3 style="margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.2rem;">
+                    <i class="fas fa-book-reader" style="color: var(--warning);"></i> Recommended Review Topics
+                </h3>
+                <div class="tag-list" id="recommendedTopics">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Row 4: Performance Progress Graph -->
+            <div class="glass-card graph-card">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-area" style="color: var(--accent-color);"></i> Question Score Breakdown</h3>
+                <div class="graph-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Row 5: Accordion question wise feedback -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-list-ul" style="color: var(--accent-color);"></i> Question-by-Question Review</h3>
+                <div class="q-feedback-list" id="questionsFeedbackList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 InterviewAce AI. Empowered by Google Gemini API. All rights reserved.</p>
+    </footer>
+
+    <!-- Loading Animation Modal -->
+    <div id="loader" class="loader-wrapper">
+        <div class="spinner"></div>
+        <div class="loader-text">Compiling Results...</div>
+    </div>
+
+    <!-- Script imports -->
+    <script src="js/result.js"></script>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#themeToggle i').classList.replace('fa-moon', 'fa-sun');
+        }
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const icon = document.querySelector('#themeToggle i');
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

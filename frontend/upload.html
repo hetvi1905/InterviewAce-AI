@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis - InterviewAce AI</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js for exporting dashboard to PDF directly preserving layout -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="glass-nav">
+        <div class="navbar-container">
+            <a href="/dashboard" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                InterviewAce <span>AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/upload" class="nav-link active">Analyze Resume</a>
+                <a href="/interview" class="nav-link">Mock Interview</a>
+                <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-layout">
+        
+        <!-- Upload portal container -->
+        <div id="uploadPortal" class="upload-container">
+            <div style="text-align: center; margin-bottom: 2.5rem;">
+                <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Resume ATS & Skills Analyzer</h2>
+                <p style="color: var(--text-secondary);">Upload your PDF resume to receive a comprehensive analysis of your profile, score, strengths, and study paths.</p>
+            </div>
+
+            <!-- Upload drag/drop card -->
+            <div class="glass-card upload-area" id="dropZone">
+                <div class="upload-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="upload-text">
+                    <h3>Drag & Drop your PDF resume here</h3>
+                    <p>or click to browse from your device</p>
+                    <span style="font-size: 0.8rem; color: var(--text-light); display: block; margin-top: 1rem;">Supports PDF files up to 16MB</span>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            </div>
+
+            <!-- Error alert -->
+            <div id="uploadError" class="error-message"></div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- Analysis Results Dashboard (Hidden initially)            -->
+        <!-- ======================================================== -->
+        <div id="analysisDashboard" style="display: none;">
+            
+            <!-- Dashboard Action buttons -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>AI Resume Profile Analysis</h2>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" id="downloadReportBtn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <a href="/interview" class="btn btn-primary">
+                        <i class="fas fa-comments"></i> Start Mock Interview
+                    </a>
+                </div>
+            </div>
+
+            <!-- Target Area for html2pdf (We give it padding for clean PDF render) -->
+            <div id="pdfTarget" style="padding: 10px;">
+                
+                <!-- Row 1: ATS score & Summary -->
+                <div class="analysis-header-grid">
+                    <div class="glass-card score-widget">
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1rem; letter-spacing: 0.5px;">ATS Score</h4>
+                        <div class="score-circle">
+                            <svg>
+                                <circle class="circle-bg" cx="75" cy="75" r="60"></circle>
+                                <circle class="circle-progress" id="atsScoreCircle" cx="75" cy="75" r="60"></circle>
+                            </svg>
+                            <div class="score-value" id="atsScoreValue">0%</div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);" id="atsLevelLabel">Standard Match</p>
+                    </div>
+
+                    <div class="glass-card summary-card">
+                        <h3>Professional Summary</h3>
+                        <p id="resumeSummaryText">AI summary is loading...</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: Skills grids -->
+                <div class="analysis-details-grid">
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-check-double"></i> Skills Identified</h3>
+                        <div class="tag-list" id="skillsFoundList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Gaps / Missing Keywords</h3>
+                        <div class="tag-list" id="missingSkillsList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-graduation-cap"></i> Recommended Next Technologies</h3>
+                        <div class="tag-list" id="techRecommendedList">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Strengths, Weaknesses, Suggestions -->
+                <div class="analysis-details-grid">
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-thumbs-up" style="color: var(--success);"></i> Structural Strengths</h3>
+                        <ul class="bullet-list list-strengths" id="strengthsList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-thumbs-down" style="color: var(--danger);"></i> Experience Gaps</h3>
+                        <ul class="bullet-list list-weaknesses" id="weaknessesList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+
+                    <div class="glass-card details-card">
+                        <h3><i class="fas fa-lightbulb" style="color: var(--warning);"></i> Improvements Suggestions</h3>
+                        <ul class="bullet-list list-suggestions" id="suggestionsList">
+                            <!-- Populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Row 4: Recommended tailored interview questions -->
+                <div class="glass-card" style="padding: 2.5rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-question-circle" style="color: var(--accent-color);"></i> Tailored Interview Questions
+                    </h3>
+                    <ul class="bullet-list list-suggestions" id="questionsList" style="padding-left: 0.5rem;">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 InterviewAce AI. Empowered by Google Gemini API. All rights reserved.</p>
+    </footer>
+
+    <!-- Loading Animation Modal -->
+    <div id="loader" class="loader-wrapper">
+        <div class="spinner"></div>
+        <div class="loader-text" id="loaderText">Parsing Resume...</div>
+    </div>
+
+    <!-- Script imports -->
+    <script src="js/upload.js"></script>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#themeToggle i').classList.replace('fa-moon', 'fa-sun');
+        }
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const icon = document.querySelector('#themeToggle i');
+            if (isDark) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>
